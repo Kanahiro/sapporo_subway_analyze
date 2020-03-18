@@ -49,28 +49,28 @@ def detect_pdf_type(filepath):
         pdf_type = 'tozai'
     return pdf_type
 
-def left_table_analyze(img_array, pdf_type):
-    left_table = []
+def table_analyze(START_CELL, img_array, pdf_type):
+    table = []
     for r in range(len(STOP_NAMES[pdf_type]) - 1):
         row = []
         for c in range(COL_COUNT):
-            x = LEFT_START_CELL[0] + c * CELL_SIZE[0]
-            y = LEFT_START_CELL[1] + r * CELL_SIZE[1]
+            x = START_CELL[0] + c * CELL_SIZE[0]
+            y = START_CELL[1] + r * CELL_SIZE[1]
             cell_pixel = (x, y)
             data_of_pixels = img_array[cell_pixel[1]][cell_pixel[0]]
             row.append(data_of_pixels.tolist())
-        left_table.append(row)
+        table.append(row)
 
-    left_datas = []
-    for r in range(len(left_table)):
-        calclated_row = left_table[r]
-        for i in range(len(left_table[r])):
-            calclated_row[i] = rgb_to_type(left_table[r][i])
+    datas = []
+    for r in range(len(table)):
+        calclated_row = table[r]
+        for i in range(len(table[r])):
+            calclated_row[i] = rgb_to_type(table[r][i])
         calclated_row.insert(0, STOP_NAMES[pdf_type][r])
         calclated_row.insert(1, STOP_NAMES[pdf_type][r + 1])
-        left_datas.append(calclated_row)
+        datas.append(calclated_row)
     
-    return left_datas
+    return datas
 
 if __name__ == "__main__":
     pdffiles = glob.glob('./pdf/*.pdf')
@@ -78,10 +78,18 @@ if __name__ == "__main__":
     for pdffile in pdffiles:
         filename = os.path.splitext(os.path.basename(pdffile))[0]
         pdf_type = detect_pdf_type(filename)
+        
         pdf_images = convert_from_path(pdffile)
         img_array = np.asarray(pdf_images[0])
-        left_datas = left_table_analyze(img_array, pdf_type)
-        with open('./csv/' + filename + '.csv', 'w') as f:
+
+        left_datas = table_analyze(LEFT_START_CELL, img_array, pdf_type)
+        right_datas = table_analyze(RIGHT_START_CELL, img_array, pdf_type)
+
+        with open('./csv/' + filename + '_left.csv', 'w') as f:
             writer = csv.writer(f)
             writer.writerow(CSV_HEADER)
             writer.writerows(left_datas)
+        with open('./csv/' + filename + '_right.csv', 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(CSV_HEADER)
+            writer.writerows(right_datas)
