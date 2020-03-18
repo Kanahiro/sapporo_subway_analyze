@@ -11,13 +11,6 @@ CELL_SIZE = settings.CELL_SIZE
 
 TIME_HEADER = settings.TIME_HEADER
 
-def make_pdf_image(pdffile):
-    pdf_image = convert_from_path(pdffile)
-    print(pdf_image)
-
-def image_to_array(image):
-    image_array = np.asarray(image)
-
 def rgb_to_type(rgb_list)->int:
     if rgb_list == [255, 255, 255]:
         return 0
@@ -42,7 +35,6 @@ if __name__ == "__main__":
             data_of_pixels = img_array[cell_pixel[1]][cell_pixel[0]]
             row.append(data_of_pixels.tolist())
         left_table.append(row)
-    print(left_table)
 
     left_datas = []
     for row in left_table:
@@ -55,7 +47,3 @@ if __name__ == "__main__":
         writer = csv.writer(f)
         writer.writerow(TIME_HEADER)
         writer.writerows(left_datas)
-
-
-
-            
