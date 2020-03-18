@@ -20,6 +20,12 @@ def rgb_to_type(rgb_list)->int:
         return 0
     elif rgb_list == [112, 200, 241]:
         return 1
+    elif rgb_list == [57, 83, 164]:
+        return 2
+    elif rgb_list == [246, 235, 20]:
+        return 3
+    elif rgb_list == [237, 32, 36]:
+        return 4
 
 if __name__ == "__main__":
     pdffile = './pdf/1.pdf'
