@@ -5,6 +5,8 @@ from pdf2image import convert_from_path, convert_from_bytes
 
 import settings
 
+CROWD_RGBs = settings.CROWD_RGBs
+
 LEFT_START_CELL = settings.LEFT_START_CELL
 RIGHT_START_CELL = settings.RIGHT_START_CELL
 CELL_SIZE = settings.CELL_SIZE
@@ -15,21 +17,20 @@ ROW_COUNT = settings.ROW_COUNT
 NAMBOKU_HEADER = settings.NAMBOKU_HEADER
 NAMBOKU_ROUTE_NAMES = settings.NAMBOKU_ROUTE_NAMES
 
-#0 -> 4 混み具合
 def rgb_to_type(rgb_list)->int:
-    if rgb_list == [255, 255, 255]:
-        return 0
-    elif rgb_list == [112, 200, 241]:
-        return 1
-    elif rgb_list == [57, 83, 164]:
-        return 2
-    elif rgb_list == [246, 235, 20]:
-        return 3
-    elif rgb_list == [237, 32, 36]:
-        return 4
+    #色さの閾値
+    threshold = 50
+    color_array = np.asarray(rgb_list)
+    for i in range(len(CROWD_RGBs)):
+        crowd_rgb_array = np.asarray(CROWD_RGBs[i])
+        color_dist = abs(color_array - crowd_rgb_array)
+        sum_dist = color_dist.sum()
+        if sum_dist < threshold:
+            return i #0 - 4 混み具合
+
 
 if __name__ == "__main__":
-    pdffile = './pdf/1.pdf'
+    pdffile = './pdf/2.pdf'
     pdf_images = convert_from_path(pdffile)
     img_array = np.asarray(pdf_images[0])
 
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         calclated_row.insert(1, NAMBOKU_ROUTE_NAMES[r + 1])
         left_datas.append(calclated_row)
 
-    with open('sample.csv', 'w') as f:
+    with open('sample2.csv', 'w') as f:
         writer = csv.writer(f)
         writer.writerow(NAMBOKU_HEADER)
         writer.writerows(left_datas)
