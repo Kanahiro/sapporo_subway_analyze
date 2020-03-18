@@ -15,6 +15,7 @@ ROW_COUNT = settings.ROW_COUNT
 NAMBOKU_HEADER = settings.NAMBOKU_HEADER
 NAMBOKU_ROUTE_NAMES = settings.NAMBOKU_ROUTE_NAMES
 
+#0 -> 4 混み具合
 def rgb_to_type(rgb_list)->int:
     if rgb_list == [255, 255, 255]:
         return 0
