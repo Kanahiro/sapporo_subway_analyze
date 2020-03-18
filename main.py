@@ -42,7 +42,8 @@ if __name__ == "__main__":
         calclated_row = left_table[r]
         for i in range(len(left_table[r])):
             calclated_row[i] = rgb_to_type(left_table[r][i])
-        calclated_row.insert(0, NAMBOKU_ROUTE_NAMES[r] + "→" + NAMBOKU_ROUTE_NAMES[r + 1])
+        calclated_row.insert(0, NAMBOKU_ROUTE_NAMES[r])
+        calclated_row.insert(1, NAMBOKU_ROUTE_NAMES[r + 1])
         left_datas.append(calclated_row)
 
     with open('sample.csv', 'w') as f:
