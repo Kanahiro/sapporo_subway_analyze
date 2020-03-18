@@ -1,6 +1,7 @@
 import os
 import csv
 import glob
+import urllib.request
 
 import numpy as np
 from PIL import Image
@@ -15,7 +16,6 @@ RIGHT_START_CELL = settings.RIGHT_START_CELL
 CELL_SIZE = settings.CELL_SIZE
 
 COL_COUNT = settings.COL_COUNT
-ROW_COUNT = settings.ROW_COUNT
 
 CSV_HEADER = settings.CSV_HEADER
 STOP_NAMES = settings.STOP_NAMES
@@ -36,8 +36,9 @@ def rgb_to_type(rgb_list)->int:
 def fetch_pdf_data():
     sms = SapporoMetroScraper()
     for link in sms.pdf_links:
-        r = requests.get(link)
-        print(r)
+        filename = link.split('/')[-1]
+        basename = filename.split('.')[0]
+        urllib.request.urlretrieve(link, './pdf/' + basename + '.pdf')
 
 def detect_pdf_type(filepath):
     pdf_type = ''
@@ -73,12 +74,13 @@ def table_analyze(START_CELL, img_array, pdf_type):
     return datas
 
 if __name__ == "__main__":
+    fetch_pdf_data()
     pdffiles = glob.glob('./pdf/*.pdf')
 
     for pdffile in pdffiles:
         filename = os.path.splitext(os.path.basename(pdffile))[0]
         pdf_type = detect_pdf_type(filename)
-        
+
         pdf_images = convert_from_path(pdffile)
         img_array = np.asarray(pdf_images[0])
 

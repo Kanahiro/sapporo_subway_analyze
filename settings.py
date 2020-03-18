@@ -17,7 +17,6 @@ CELL_SIZE = (95, 68)
 
 #PDFのセルの数
 COL_COUNT = 6
-ROW_COUNT = 15
 
 #CSVのヘッダー
 CSV_HEADER = [
