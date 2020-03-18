@@ -25,7 +25,7 @@ jobs:
         pip install -r requirements.txt
     - name: install poppler
       run: |
-        pip install poppler
+        sudo apt install poppler-utils
     - name: Run script
       run: |
         python main.py
