@@ -39,13 +39,7 @@ def fetch_pdf_data():
         r = requests.get(link)
         print(r)
 
-
-if __name__ == "__main__":
-    pdffiles = glob.glob('./pdf/*.pdf')
-
-    pdffile = pdffiles[3]
-    filename = os.path.splitext(os.path.basename(pdffile))[0]
-
+def detect_pdf_type(filepath):
     pdf_type = ''
     if filename.endswith('namboku'):
         pdf_type = 'namboku'
@@ -53,10 +47,9 @@ if __name__ == "__main__":
         pdf_type = 'toho'
     elif filename.endswith('tozai'):
         pdf_type = 'tozai'
+    return pdf_type
 
-    pdf_images = convert_from_path(pdffile)
-    img_array = np.asarray(pdf_images[0])
-
+def left_table_analyze(img_array, pdf_type):
     left_table = []
     for r in range(len(STOP_NAMES[pdf_type]) - 1):
         row = []
@@ -76,8 +69,19 @@ if __name__ == "__main__":
         calclated_row.insert(0, STOP_NAMES[pdf_type][r])
         calclated_row.insert(1, STOP_NAMES[pdf_type][r + 1])
         left_datas.append(calclated_row)
+    
+    return left_datas
 
-    with open('./csv/' + filename + '.csv', 'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(CSV_HEADER)
-        writer.writerows(left_datas)
+if __name__ == "__main__":
+    pdffiles = glob.glob('./pdf/*.pdf')
+
+    for pdffile in pdffiles:
+        filename = os.path.splitext(os.path.basename(pdffile))[0]
+        pdf_type = detect_pdf_type(filename)
+        pdf_images = convert_from_path(pdffile)
+        img_array = np.asarray(pdf_images[0])
+        left_datas = left_table_analyze(img_array, pdf_type)
+        with open('./csv/' + filename + '.csv', 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(CSV_HEADER)
+            writer.writerows(left_datas)
