@@ -34,11 +34,22 @@ def rgb_to_type(rgb_list)->int:
             return i #0 - 4 混み具合
 
 def fetch_pdf_data():
+    #既に保存してあるPDFリスト
+    saved_files = glob.glob('./pdf/*.pdf')
+    saved_filenames = []
+    for f in saved_files:
+        saved_filenames.append(os.path.basename(f))
+    
     sms = SapporoMetroScraper()
     for link in sms.pdf_links:
         filename = link.split('/')[-1]
         basename = filename.split('.')[0]
+        #もし既に保存してあるなら処理をスキップ
+        if filename in saved_filenames:
+            continue
+        print('downloading:' + filename)
         urllib.request.urlretrieve(link, './pdf/' + basename + '.pdf')
+        print('complete')
 
 def detect_pdf_type(filepath):
     pdf_type = ''
