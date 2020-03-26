@@ -103,12 +103,11 @@ if __name__ == "__main__":
             writer.writerows(left_datas)
 
         with open('./dist/csv/' + filename + '_right.csv', 'w') as f:
-            writer = csv.writer(f)
-
             RIGHT_CSV_HEADER = []
             RIGHT_CSV_HEADER.append(CSV_HEADER[1])
             RIGHT_CSV_HEADER.append(CSV_HEADER[0])
             RIGHT_CSV_HEADER += CSV_HEADER[2:]
-
+            
+            writer = csv.writer(f)
             writer.writerow(RIGHT_CSV_HEADER)
             writer.writerows(right_datas)
