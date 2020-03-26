@@ -35,5 +35,4 @@ class SapporoMetroScraper:
                 'data':urllib.request.urlopen(link).read()
             }
             self.pdf_datas.append(pdf_bin)
-            print('complete')
-        print('done')
+            print('done')
