@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import urllib.request
 import io
 
-class SapporoMetroScraper:
+class SapporoSubwayScraper:
     def __init__(self, url='https://www.city.sapporo.jp/st/konzatsu_jokyo2020.html'):
         print('start initialize scraper')
         opener = urllib.request.build_opener()

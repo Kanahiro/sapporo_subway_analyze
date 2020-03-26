@@ -7,35 +7,62 @@ import csv
 #日本標準時
 JST = datetime.timezone(datetime.timedelta(hours=+9), 'JST')
 
-def export_json_of(json_dict, filename, directory='./dist/json/'):
-    with open(directory + filename + '.json', 'w', encoding='utf-8') as f:
-        json.dump(json_dict, f, indent=4, ensure_ascii=False)
+class SubwayJsonMaker:
+    def __init__(self):
+        self.dicts = {
+            'namboku':{},
+            'toho':{},
+            'tozai':{}
+        }
 
-#CSV文字列を[dict]型に変換
-def csvstr_to_dicts(csvstr)->list:
-    datas = []
-    rows = [row for row in csv.reader(csvstr.splitlines())]
-    header = rows[0]
-    maindatas = rows[1:]
-    for d in maindatas:
-        data = {}
-        for i in range(len(header)):
-            data[header[i]] = d[i]
-        datas.append(data)
-    return datas
+    #CSV文字列を[dict]型に変換
+    def csvstr_to_dicts(self, csvstr)->list:
+        datas = []
+        rows = [row for row in csv.reader(csvstr.splitlines())]
+        header = rows[0]
+        maindatas = rows[1:]
+        for d in maindatas:
+            data = {}
+            for i in range(len(header)):
+                data[header[i]] = d[i]
+            datas.append(data)
+        return datas
+
+    def import_csvfiles(self):
+        csvfiles = glob.glob('./dist/csv/*.csv')
+        for csvfile in csvfiles:
+            filename = os.path.splitext(os.path.basename(csvfile))[0]
+            datas = []
+
+            with open(csvfile, encoding='utf-8') as f:
+                datas = self.csvstr_to_dicts(f.read())
+
+            data_type = self.parse(filename)
+            update_dict = {
+                data_type['route']:{
+                    data_type['date']:{
+                        data_type['direction']:datas
+                    }
+                }
+            }
+            self.dicts.update(update_dict)
+
+
+    def parse(self, filename:str)->dict:
+        parsed = filename.split('_')
+        data_type = {
+            'date':parsed[-3],
+            'route':parsed[-2],
+            'direction':parsed[-1]
+        }
+        return data_type
+
+    def export_as_json(self, filename='data.json', directory='./dist/json/'):
+        with open(directory + filename, 'w', encoding='utf-8') as f:
+            json.dump(self.dicts, f, indent=4, ensure_ascii=False)
+
 
 if __name__ == "__main__":
-    csvfiles = glob.glob('./dist/csv/*.csv')
-    for csvfile in csvfiles:
-        filename = os.path.splitext(os.path.basename(csvfile))[0]
-        last_modified_time = datetime.datetime.fromtimestamp(os.path.getmtime(csvfile), JST).isoformat()
-        datas = []
-
-        with open(csvfile, encoding='utf-8') as f:
-            datas = csvstr_to_dicts(f.read())
-
-        json_dict = {
-            'data':datas,
-            'last_update':last_modified_time
-        }
-        export_json_of(json_dict, filename)
+    svm = SubwayJsonMaker()
+    svm.import_csvfiles()
+    svm.export_as_json()

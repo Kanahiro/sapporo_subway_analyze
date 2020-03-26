@@ -20,7 +20,7 @@ COL_COUNT = settings.COL_COUNT
 CSV_HEADER = settings.CSV_HEADER
 STOP_NAMES = settings.STOP_NAMES
 
-from scraping import SapporoMetroScraper
+from scraping import SapporoSubwayScraper
 
 def rgb_to_type(rgb_list)->int:
     #色差の閾値
@@ -67,12 +67,11 @@ def table_analyze(START_CELL, img_array, pdf_type):
     return datas
 
 if __name__ == "__main__":
-    sms = SapporoMetroScraper()
-    sms.fetch_pdf_data()
-    pdf_datas = sms.pdf_datas
+    sss = SapporoSubwayScraper()
+    sss.fetch_pdf_data()
 
     print('start Analyzing PDF files')
-    for pdf_data in pdf_datas:
+    for pdf_data in sss.pdf_datas:
         filename = pdf_data['name']
         pdf_type = detect_pdf_type(filename)
         print('analyze:', filename)
