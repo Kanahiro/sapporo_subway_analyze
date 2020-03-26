@@ -18,7 +18,7 @@ def fetch_pdf_data():
         if filename in saved_filenames:
             continue
         print('downloading:' + filename)
-        urllib.request.urlretrieve(link, './pdf/' + basename + '.pdf')
+        urllib.request.urlretrieve(link, 'pdf/' + basename + '.pdf')
         print('complete')
 
 if __name__ == "__main__":
