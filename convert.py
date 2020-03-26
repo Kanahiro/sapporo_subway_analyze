@@ -11,8 +11,8 @@ class SubwayJsonMaker:
     def __init__(self):
         self.dicts = {
             'namboku':{},
-            'toho':{},
-            'tozai':{}
+            'tozai':{},
+            'toho':{}
         }
 
     #CSV文字列を[dict]型に変換
@@ -38,14 +38,29 @@ class SubwayJsonMaker:
                 datas = self.csvstr_to_dicts(f.read())
 
             data_type = self.parse(filename)
-            update_dict = {
-                data_type['route']:{
-                    data_type['date']:{
-                        data_type['direction']:datas
-                    }
+            route = data_type['route']
+            date = data_type['date']
+            direction = data_type['direction']
+            
+            try:
+                self.dicts[route][date] = {
+                    direction:datas
                 }
-            }
-            self.dicts.update(update_dict)
+            except KeyError:
+                try:
+                    self.dicts[route] = {
+                        date:{
+                            direction:datas
+                        }
+                    }
+                except KeyError:
+                    self.dicts = {
+                        route:{
+                            date:{
+                                direction:datas
+                            }
+                        }
+                    }
 
 
     def parse(self, filename:str)->dict:
