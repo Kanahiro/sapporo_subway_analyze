@@ -85,7 +85,6 @@ def table_analyze(START_CELL, img_array, pdf_type):
     return datas
 
 if __name__ == "__main__":
-    fetch_pdf_data()
     pdffiles = glob.glob('./pdf/*.pdf')
 
     for pdffile in pdffiles:
@@ -98,11 +97,12 @@ if __name__ == "__main__":
         left_datas = table_analyze(LEFT_START_CELL, img_array, pdf_type)
         right_datas = table_analyze(RIGHT_START_CELL, img_array, pdf_type)
 
-        with open('./csv/' + filename + '_left.csv', 'w') as f:
+        with open('./dist/csv/' + filename + '_left.csv', 'w') as f:
             writer = csv.writer(f)
             writer.writerow(CSV_HEADER)
             writer.writerows(left_datas)
-        with open('./csv/' + filename + '_right.csv', 'w') as f:
+
+        with open('./dist/csv/' + filename + '_right.csv', 'w') as f:
             writer = csv.writer(f)
 
             RIGHT_CSV_HEADER = []

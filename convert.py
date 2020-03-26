@@ -7,7 +7,7 @@ import csv
 #日本標準時
 JST = datetime.timezone(datetime.timedelta(hours=+9), 'JST')
 
-def export_json_of(json_dict, filename, directory='json/'):
+def export_json_of(json_dict, filename, directory='./dist/json/'):
     with open(directory + filename + '.json', 'w', encoding='utf-8') as f:
         json.dump(json_dict, f, indent=4, ensure_ascii=False)
 
@@ -25,7 +25,7 @@ def csvstr_to_dicts(csvstr)->list:
     return datas
 
 if __name__ == "__main__":
-    csvfiles = glob.glob('./csv/*.csv')
+    csvfiles = glob.glob('./dist/csv/*.csv')
     for csvfile in csvfiles:
         filename = os.path.splitext(os.path.basename(csvfile))[0]
         last_modified_time = datetime.datetime.fromtimestamp(os.path.getmtime(csvfile), JST).isoformat()

@@ -26,12 +26,24 @@ jobs:
     - name: install poppler
       run: |
         sudo apt install poppler-utils
-    - name: Run script
+    - name: Get PDFs from Sapporo City Website
       run: |
-        python main.py
-    - name: deploy
+        python download.py
+    - name: deploy to update PDFs
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./csv
+        publish_dir: ./
+        publish_branch: master
+    - name: Run Main Script
+      run: |
+        python main.py
+    - name: Run CSV-JSON convert Script
+      run: |
+        python convert.py
+    - name: deploy gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
         publish_branch: gh-pages
