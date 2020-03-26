@@ -5,7 +5,7 @@ import urllib.request
 
 import numpy as np
 from PIL import Image
-from pdf2image import convert_from_path
+from pdf2image import convert_from_path, convert_from_bytes
 
 import settings
 
@@ -32,24 +32,6 @@ def rgb_to_type(rgb_list)->int:
         sum_dist = color_dist.sum()
         if sum_dist < threshold:
             return i #0 - 4 混み具合
-
-def fetch_pdf_data():
-    #既に保存してあるPDFリスト
-    saved_files = glob.glob('./pdf/*.pdf')
-    saved_filenames = []
-    for f in saved_files:
-        saved_filenames.append(os.path.basename(f))
-    
-    sms = SapporoMetroScraper()
-    for link in sms.pdf_links:
-        filename = link.split('/')[-1]
-        basename = filename.split('.')[0]
-        #もし既に保存してあるなら処理をスキップ
-        if filename in saved_filenames:
-            continue
-        print('downloading:' + filename)
-        urllib.request.urlretrieve(link, './pdf/' + basename + '.pdf')
-        print('complete')
 
 def detect_pdf_type(filepath):
     pdf_type = ''
@@ -85,18 +67,23 @@ def table_analyze(START_CELL, img_array, pdf_type):
     return datas
 
 if __name__ == "__main__":
-    pdffiles = glob.glob('./pdf/*.pdf')
+    sms = SapporoMetroScraper()
+    sms.fetch_pdf_data()
+    pdf_datas = sms.pdf_datas
 
-    for pdffile in pdffiles:
-        filename = os.path.splitext(os.path.basename(pdffile))[0]
+    print('start Analyzing PDF files')
+    for pdf_data in pdf_datas:
+        filename = pdf_data['name']
         pdf_type = detect_pdf_type(filename)
+        print('analyze:', filename)
 
-        pdf_images = convert_from_path(pdffile)
+        pdf_images = convert_from_bytes(pdf_data['data'])
         img_array = np.asarray(pdf_images[0])
 
         left_datas = table_analyze(LEFT_START_CELL, img_array, pdf_type)
         right_datas = table_analyze(RIGHT_START_CELL, img_array, pdf_type)
 
+        print('write csv files')
         with open('./dist/csv/' + filename + '_left.csv', 'w') as f:
             writer = csv.writer(f)
             writer.writerow(CSV_HEADER)
@@ -107,7 +94,9 @@ if __name__ == "__main__":
             RIGHT_CSV_HEADER.append(CSV_HEADER[1])
             RIGHT_CSV_HEADER.append(CSV_HEADER[0])
             RIGHT_CSV_HEADER += CSV_HEADER[2:]
-            
+
             writer = csv.writer(f)
             writer.writerow(RIGHT_CSV_HEADER)
             writer.writerows(right_datas)
+
+        print('done')
