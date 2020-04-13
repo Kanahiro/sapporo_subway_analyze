@@ -18,7 +18,10 @@ class SapporoSubwayScraper:
         pdf_anchors = bs.find_all("a", class_="icon_pdf")
         pdf_links = []
         for anchor in pdf_anchors:
-            pdf_links.append('https://www.city.sapporo.jp' + anchor.get('href') )
+            anchor = anchor.get('href')
+            if '2020_2gatsu' in anchor or '2020_3gatsu' in anchor:
+                continue
+            pdf_links.append('https://www.city.sapporo.jp' + anchor)
         print('done')
         self.pdf_links = pdf_links
         self.pdf_datas = []

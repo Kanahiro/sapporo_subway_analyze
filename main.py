@@ -11,8 +11,7 @@ import settings
 
 CROWD_RGBs = settings.CROWD_RGBs
 
-LEFT_START_CELL = settings.LEFT_START_CELL
-RIGHT_START_CELL = settings.RIGHT_START_CELL
+START_CELL = settings.START_CELL
 CELL_SIZE = settings.CELL_SIZE
 
 COL_COUNT = settings.COL_COUNT
@@ -35,11 +34,11 @@ def rgb_to_type(rgb_list)->int:
 
 def detect_pdf_type(filepath):
     pdf_type = ''
-    if filename.endswith('namboku'):
+    if 'namboku' in filepath:
         pdf_type = 'namboku'
-    elif filename.endswith('toho'):
+    elif 'toho' in filepath:
         pdf_type = 'toho'
-    elif filename.endswith('tozai'):
+    elif 'tozai' in filepath:
         pdf_type = 'tozai'
     return pdf_type
 
@@ -79,23 +78,16 @@ if __name__ == "__main__":
         pdf_images = convert_from_bytes(pdf_data['data'])
         img_array = np.asarray(pdf_images[0])
 
-        left_datas = table_analyze(LEFT_START_CELL, img_array, pdf_type)
-        right_datas = table_analyze(RIGHT_START_CELL, img_array, pdf_type)
+        table_datas = table_analyze(START_CELL, img_array, pdf_type)
 
         print('write csv files')
-        with open('./dist/csv/' + filename + '_left.csv', 'w') as f:
+        with open('./dist/csv/' + filename + '.csv', 'w') as f:
+            if 'asa' in filename or 'miya' in filename or 'saka' in filename:
+                CSV_HEADER[0] = '到着駅'
+                CSV_HEADER[1] = '出発駅'
+                
             writer = csv.writer(f)
             writer.writerow(CSV_HEADER)
-            writer.writerows(left_datas)
-
-        with open('./dist/csv/' + filename + '_right.csv', 'w') as f:
-            RIGHT_CSV_HEADER = []
-            RIGHT_CSV_HEADER.append(CSV_HEADER[1])
-            RIGHT_CSV_HEADER.append(CSV_HEADER[0])
-            RIGHT_CSV_HEADER += CSV_HEADER[2:]
-
-            writer = csv.writer(f)
-            writer.writerow(RIGHT_CSV_HEADER)
-            writer.writerows(right_datas)
+            writer.writerows(table_datas)
 
         print('done')

@@ -28,15 +28,3 @@ jobs:
     - name: Run Main Script
       run: |
         python main.py
-    - name: Run CSV-JSON convert Script
-      run: |
-        python convert.py
-    - name: Run making v-rest api Script
-      run: |
-        python vrest.py
-    - name: deploy gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        publish_branch: gh-pages
