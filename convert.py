@@ -32,6 +32,10 @@ class SubwayJsonMaker:
         csvfiles = glob.glob('./dist/csv/*.csv')
         for csvfile in csvfiles:
             filename = os.path.splitext(os.path.basename(csvfile))[0]
+
+            if '2020_2gatsu' in filename or '2020_3gatsu' in filename:
+                continue
+
             datas = []
 
             with open(csvfile, encoding='utf-8') as f:

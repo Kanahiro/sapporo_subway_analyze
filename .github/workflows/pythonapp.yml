@@ -28,3 +28,9 @@ jobs:
     - name: Run Main Script
       run: |
         python main.py
+    - name: Run csv2json Script
+      run: |
+        python convert.py
+    - name: Run vrest Script
+      run: |
+        python vrest.py
