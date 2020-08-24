@@ -10,7 +10,7 @@ https://kanahiro.github.io/sapporo_subway_analyze/api/data/{路線名}/{デー�
 ```
 
 例1：南北線、3月2週、右表の全データ
-https://kanahiro.github.io/sapporo_subway_analyze/api/data/namboku/3gatsu2shu/right/
+https://kanahiro.github.io/sapporo_subway_analyze/api/data/namboku/4gatsu1shu/right/
 
 例2：東豊線、3月3週の全データ
-https://kanahiro.github.io/sapporo_subway_analyze/api/data/toho/3gatsu3shu/
+https://kanahiro.github.io/sapporo_subway_analyze/api/data/toho/4gatsu1shu/
