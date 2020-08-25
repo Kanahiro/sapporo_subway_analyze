@@ -1,3 +1,4 @@
+from scraping import SapporoSubwayScraper
 import os
 import csv
 import glob
@@ -19,10 +20,9 @@ COL_COUNT = settings.COL_COUNT
 CSV_HEADER = settings.CSV_HEADER
 STOP_NAMES = settings.STOP_NAMES
 
-from scraping import SapporoSubwayScraper
 
-def rgb_to_type(rgb_list)->int:
-    #色差の閾値
+def rgb_to_type(rgb_list) -> int:
+    # 色差の閾値
     threshold = 50
     color_array = np.asarray(rgb_list)
     for i in range(len(CROWD_RGBs)):
@@ -30,7 +30,8 @@ def rgb_to_type(rgb_list)->int:
         color_dist = abs(color_array - crowd_rgb_array)
         sum_dist = color_dist.sum()
         if sum_dist < threshold:
-            return i #0 - 4 混み具合
+            return i  # 0 - 4 混み具合
+
 
 def detect_pdf_type(filepath):
     pdf_type = ''
@@ -41,6 +42,7 @@ def detect_pdf_type(filepath):
     elif 'tozai' in filepath:
         pdf_type = 'tozai'
     return pdf_type
+
 
 def table_analyze(START_CELL, img_array, pdf_type):
     table = []
@@ -62,10 +64,16 @@ def table_analyze(START_CELL, img_array, pdf_type):
         calclated_row.insert(0, STOP_NAMES[pdf_type][r])
         calclated_row.insert(1, STOP_NAMES[pdf_type][r + 1])
         datas.append(calclated_row)
-    
+
     return datas
 
+
 if __name__ == "__main__":
+
+    os.makedirs("./dist/api", exist_ok=True)
+    os.makedirs("./dist/csv", exist_ok=True)
+    os.makedirs("./dist/json", exist_ok=True)
+
     sss = SapporoSubwayScraper()
     sss.fetch_pdf_data()
 
@@ -85,7 +93,7 @@ if __name__ == "__main__":
             if 'asa' in filename or 'miya' in filename or 'saka' in filename:
                 CSV_HEADER[0] = '到着駅'
                 CSV_HEADER[1] = '出発駅'
-                
+
             writer = csv.writer(f)
             writer.writerow(CSV_HEADER)
             writer.writerows(table_datas)
