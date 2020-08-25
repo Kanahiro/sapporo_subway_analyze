@@ -69,7 +69,8 @@ def table_analyze(START_CELL, img_array, pdf_type):
 
 
 if __name__ == "__main__":
-
+    import subprocess
+    subprocess.run(["ls"])
     os.makedirs("./dist/api", exist_ok=True)
     os.makedirs("./dist/csv", exist_ok=True)
     os.makedirs("./dist/json", exist_ok=True)
